@@ -8,6 +8,8 @@ import br.ce.wcaquino.entidades.Filme;
 import br.ce.wcaquino.entidades.Locacao;
 import br.ce.wcaquino.entidades.Usuario;
 import br.ce.wcaquino.utils.DataUtils;
+import org.junit.Assert;
+import org.junit.jupiter.api.Test;
 
 public class LocacaoService {
 	
@@ -28,18 +30,19 @@ public class LocacaoService {
 		
 		return locacao;
 	}
-	
-	public static void main(String[] args) {
+
+	@Test
+	public void testeAlugaFilmes(){
 		LocacaoService service = new LocacaoService();
 		Usuario usuario = new Usuario("Carol");
 		Filme filme = new Filme("O Brilho eterno de uma mente sem lembraças", 3, 15.62);
 
 		Locacao locacao = service.alugarFilme(usuario, filme);
-		System.out.println(locacao.getFilme().getNome().equals("O Brilho eterno de uma mente sem lembraças"));
-		System.out.println(locacao.getUsuario().getNome().equals("Carol"));
-		System.out.println(DataUtils.isMesmaData(locacao.getDataLocacao(), new Date()));
-		System.out.println(DataUtils.isMesmaData(locacao.getDataRetorno(), DataUtils.obterDataComDiferencaDias(1)));
-		System.out.println(locacao.getValor() == 15.62);
+		Assert.assertTrue(locacao.getFilme().getNome().equals("O Brilho eterno de uma mente sem lembraças"));
+		Assert.assertTrue(locacao.getUsuario().getNome().equals("Carol"));
+		Assert.assertTrue(DataUtils.isMesmaData(locacao.getDataLocacao(), new Date()));
+		Assert.assertTrue(DataUtils.isMesmaData(locacao.getDataRetorno(), DataUtils.obterDataComDiferencaDias(1)));
+		Assert.assertTrue(locacao.getValor() == 15.62);
 
 	}
 }
