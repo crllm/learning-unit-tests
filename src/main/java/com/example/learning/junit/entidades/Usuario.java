@@ -1,4 +1,4 @@
-package br.ce.wcaquino.entidades;
+package com.example.learning.junit.entidades;
 
 public class Usuario {
 
