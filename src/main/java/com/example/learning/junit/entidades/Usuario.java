@@ -2,19 +2,20 @@ package com.example.learning.junit.entidades;
 
 public class Usuario {
 
-	private String nome;
-	
-	public Usuario() {}
-	
-	public Usuario(String nome) {
-		this.nome = nome;
-	}
+    private String nome;
 
-	public String getNome() {
-		return nome;
-	}
+    public Usuario() {
+    }
 
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
+    public Usuario(String nome) {
+        this.nome = nome;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
 }
