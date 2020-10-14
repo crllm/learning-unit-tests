@@ -1,13 +1,18 @@
 package com.example.learning.junit.entidades;
 
 import java.util.Date;
+import java.util.List;
 
 public class Locacao {
 
     private Usuario usuario;
-    private Filme filme;
+
+    private List<Filme> filmes;
+
     private Date dataLocacao;
+
     private Date dataRetorno;
+
     private Double valor;
 
     public Usuario getUsuario() {
@@ -42,11 +47,11 @@ public class Locacao {
         this.valor = valor;
     }
 
-    public Filme getFilme() {
-        return filme;
+    public List<Filme> getFilme() {
+        return filmes;
     }
 
-    public void setFilme(Filme filme) {
-        this.filme = filme;
+    public void setFilme(List<Filme> filmes) {
+        this.filmes = filmes;
     }
 }
