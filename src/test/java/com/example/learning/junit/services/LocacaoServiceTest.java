@@ -16,6 +16,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static com.example.learning.junit.builders.FilmeBuilder.umFilme;
+import static com.example.learning.junit.builders.UsuarioBuilder.umUsuario;
 import static com.example.learning.junit.matchers.MatcherProprios.caiEm;
 import static com.example.learning.junit.matchers.MatcherProprios.dataDiferenca;
 import static com.example.learning.junit.utils.DataUtils.isMesmaData;
@@ -42,8 +44,8 @@ public class LocacaoServiceTest {
     public void alugaFilmes() throws FilmeSemEstoqueException, LocadoraException {
         Assume.assumeFalse(DataUtils.verificarDiaSemana(new Date(), Calendar.SATURDAY));
 
-        Usuario usuario = new Usuario("Carol");
-        List<Filme> filmes = Arrays.asList(new Filme("O Brilho eterno de uma mente sem lembraças", 5, 15.62));
+        Usuario usuario = umUsuario().agora();
+        List<Filme> filmes = Arrays.asList(umFilme().agora());
 
         Locacao locacao = service.alugarFilme(usuario, filmes);
         locacao.getFilme().forEach(filme -> errorCollector.checkThat(filme.getNome(), is(equalTo("O Brilho eterno de uma mente sem lembraças"))));
@@ -56,8 +58,9 @@ public class LocacaoServiceTest {
 
     @Test(expected = FilmeSemEstoqueException.class)
     public void alugarFilmesSemEstoque() throws Exception {
-        Usuario usuario = new Usuario("Carol");
-        List<Filme> filmes = Arrays.asList(new Filme("O Brilho eterno de uma mente sem lembraças", 0, 15.62));
+        Usuario usuario = umUsuario().agora();
+
+        List<Filme> filmes = Arrays.asList(umFilme().semEstoque().agora());
         service.alugarFilme(usuario, filmes);
 
     }
@@ -65,7 +68,7 @@ public class LocacaoServiceTest {
     @Test
     public void usuarioVazio() throws FilmeSemEstoqueException {
         LocacaoService service = new LocacaoService();
-        List<Filme> filmes = Arrays.asList(new Filme("O Brilho eterno de uma mente sem lembraças", 5, 15.62));
+        List<Filme> filmes = Arrays.asList(umFilme().agora());
         try {
             service.alugarFilme(null, filmes);
             Assert.fail();
@@ -77,7 +80,7 @@ public class LocacaoServiceTest {
     @Test
     public void filmeVazio() throws FilmeSemEstoqueException, LocadoraException {
         LocacaoService service = new LocacaoService();
-        Usuario usuario = new Usuario("Carol");
+        Usuario usuario = umUsuario().agora();
 
         exception.expect(LocadoraException.class);
         exception.expectMessage("Informações de filme estão vazios");
@@ -86,7 +89,7 @@ public class LocacaoServiceTest {
 
     @Test
     public void descontoNo3Filme() throws FilmeSemEstoqueException, LocadoraException {
-        Usuario usuario = new Usuario("Carol");
+        Usuario usuario = umUsuario().agora();
         List<Filme> filmes = Arrays.asList(new Filme("O Brilho eterno de uma mente sem lembraças", 5, 4.0),
                 new Filme("Origem", 3, 4.0),
                 new Filme("Toy Story", 2, 4.0));
@@ -97,7 +100,7 @@ public class LocacaoServiceTest {
 
     @Test
     public void dscontoNo4Filme() throws FilmeSemEstoqueException, LocadoraException {
-        Usuario usuario = new Usuario("Carol");
+        Usuario usuario = umUsuario().agora();
         List<Filme> filmes = Arrays.asList(new Filme("O Brilho eterno de uma mente sem lembraças", 5, 4.0),
                 new Filme("Origem", 3, 4.0),
                 new Filme("Toy Story", 2, 4.0),
@@ -109,7 +112,7 @@ public class LocacaoServiceTest {
 
     @Test
     public void descontoNo5Filme() throws FilmeSemEstoqueException, LocadoraException {
-        Usuario usuario = new Usuario("Carol");
+        Usuario usuario = umUsuario().agora();
         List<Filme> filmes = Arrays.asList(new Filme("O Brilho eterno de uma mente sem lembraças", 5, 4.0),
                 new Filme("Origem", 3, 4.0),
                 new Filme("Toy Story", 2, 4.0),
@@ -122,7 +125,7 @@ public class LocacaoServiceTest {
 
     @Test
     public void dscontoNo6Filme() throws FilmeSemEstoqueException, LocadoraException {
-        Usuario usuario = new Usuario("Carol");
+        Usuario usuario = umUsuario().agora();
         List<Filme> filmes = Arrays.asList(new Filme("O Brilho eterno de uma mente sem lembraças", 5, 4.0),
                 new Filme("Origem", 3, 4.0),
                 new Filme("Toy Story", 2, 4.0),
@@ -138,7 +141,7 @@ public class LocacaoServiceTest {
     public void testeEntregaNoDomingo() throws FilmeSemEstoqueException, LocadoraException {
         Assume.assumeTrue(DataUtils.verificarDiaSemana(new Date(), Calendar.SATURDAY));
 
-        Usuario usuario = new Usuario("Carol");
+        Usuario usuario = umUsuario().agora();
         List<Filme> filmes = Arrays.asList(new Filme("O Brilho eterno de uma mente sem lembraças", 5, 15.62));
 
         Locacao locacao = service.alugarFilme(usuario, filmes);
