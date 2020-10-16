@@ -16,8 +16,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import static com.example.learning.junit.matchers.MatcherProprios.caiEm;
+import static com.example.learning.junit.matchers.MatcherProprios.dataDiferenca;
 import static com.example.learning.junit.utils.DataUtils.isMesmaData;
-import static com.example.learning.junit.utils.DataUtils.obterDataComDiferencaDias;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -48,8 +49,9 @@ public class LocacaoServiceTest {
         locacao.getFilme().forEach(filme -> errorCollector.checkThat(filme.getNome(), is(equalTo("O Brilho eterno de uma mente sem lembraças"))));
         errorCollector.checkThat(locacao.getUsuario().getNome(), is(equalTo("Carol")));
         errorCollector.checkThat(isMesmaData(locacao.getDataLocacao(), new Date()), is(true));
-        errorCollector.checkThat(isMesmaData(locacao.getDataRetorno(), obterDataComDiferencaDias(1)), is(true));
+//        errorCollector.checkThat(isMesmaData(locacao.getDataRetorno(), obterDataComDiferencaDias(1)), is(true));
         errorCollector.checkThat(locacao.getValor(), is(equalTo(15.62)));
+        errorCollector.checkThat(locacao.getDataRetorno(), dataDiferenca(1));
     }
 
     @Test(expected = FilmeSemEstoqueException.class)
@@ -140,7 +142,7 @@ public class LocacaoServiceTest {
         List<Filme> filmes = Arrays.asList(new Filme("O Brilho eterno de uma mente sem lembraças", 5, 15.62));
 
         Locacao locacao = service.alugarFilme(usuario, filmes);
-        boolean segunda = DataUtils.verificarDiaSemana(locacao.getDataRetorno(), Calendar.MONDAY);
-        Assert.assertTrue(segunda);
+//        assertThat(locacao.getDataRetorno(), new DiaDaSemanaMatcher(Calendar.MONDAY));
+        assertThat(locacao.getDataRetorno(), caiEm(Calendar.MONDAY));
     }
 }
