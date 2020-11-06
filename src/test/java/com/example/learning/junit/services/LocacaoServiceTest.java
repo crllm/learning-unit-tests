@@ -1,15 +1,18 @@
 package com.example.learning.junit.services;
 
+import com.example.learning.junit.dao.LocacaoDAO;
 import com.example.learning.junit.entidades.Filme;
 import com.example.learning.junit.entidades.Locacao;
 import com.example.learning.junit.entidades.Usuario;
 import com.example.learning.junit.exceptions.FilmeSemEstoqueException;
 import com.example.learning.junit.exceptions.LocadoraException;
 import com.example.learning.junit.servicos.LocacaoService;
+import com.example.learning.junit.servicos.SPCService;
 import com.example.learning.junit.utils.DataUtils;
 import org.junit.*;
 import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
+import org.mockito.Mockito;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -24,10 +27,13 @@ import static com.example.learning.junit.utils.DataUtils.isMesmaData;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
 
 public class LocacaoServiceTest {
 
     private LocacaoService service;
+
+    private SPCService spcService;
 
     @Rule
     public ErrorCollector errorCollector = new ErrorCollector();
@@ -38,6 +44,13 @@ public class LocacaoServiceTest {
     @Before
     public void executeAntes() {
         service = new LocacaoService();
+
+        LocacaoDAO locacaoDAO = Mockito.mock(LocacaoDAO.class);
+        service.setLocacaoDAO(locacaoDAO);
+
+        spcService = Mockito.mock(SPCService.class);
+        service.setSPCService(spcService);
+
     }
 
     @Test
@@ -52,7 +65,7 @@ public class LocacaoServiceTest {
         errorCollector.checkThat(locacao.getUsuario().getNome(), is(equalTo("Carol")));
         errorCollector.checkThat(isMesmaData(locacao.getDataLocacao(), new Date()), is(true));
 //        errorCollector.checkThat(isMesmaData(locacao.getDataRetorno(), obterDataComDiferencaDias(1)), is(true));
-        errorCollector.checkThat(locacao.getValor(), is(equalTo(15.62)));
+        errorCollector.checkThat(locacao.getValor(), is(equalTo(4.0)));
         errorCollector.checkThat(locacao.getDataRetorno(), dataDiferenca(1));
     }
 
@@ -148,4 +161,18 @@ public class LocacaoServiceTest {
 //        assertThat(locacao.getDataRetorno(), new DiaDaSemanaMatcher(Calendar.MONDAY));
         assertThat(locacao.getDataRetorno(), caiEm(Calendar.MONDAY));
     }
+
+    @Test
+    public void naoDeveAlugarFilmeParaNegativadoSPC() throws FilmeSemEstoqueException, LocadoraException{
+        Usuario usuario = umUsuario().agora();
+        List<Filme> filmes = Arrays.asList(umFilme().agora());
+
+        when(spcService.possuiNegativacao(usuario)).thenReturn(true);
+
+        exception.expect(LocadoraException.class);
+        exception.expectMessage("Usuário Negativado");
+
+        service.alugarFilme(usuario, filmes);
+    }
+
 }

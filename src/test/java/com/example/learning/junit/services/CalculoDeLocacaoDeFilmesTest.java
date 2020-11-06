@@ -1,5 +1,6 @@
 package com.example.learning.junit.services;
 
+import com.example.learning.junit.dao.LocacaoDAO;
 import com.example.learning.junit.entidades.Filme;
 import com.example.learning.junit.entidades.Locacao;
 import com.example.learning.junit.entidades.Usuario;
@@ -10,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.mockito.Mockito;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,6 +37,8 @@ public class CalculoDeLocacaoDeFilmesTest {
     @Before
     public void setup() {
         service = new LocacaoService();
+        LocacaoDAO locacaoDAO = Mockito.mock(LocacaoDAO.class);
+        service.setLocacaoDAO(locacaoDAO);
     }
 
     private static Filme filme1 = new Filme("Filme 1", 2, 4.0);

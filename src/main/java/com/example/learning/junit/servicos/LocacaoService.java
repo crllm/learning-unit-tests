@@ -1,5 +1,6 @@
 package com.example.learning.junit.servicos;
 
+import com.example.learning.junit.dao.LocacaoDAO;
 import com.example.learning.junit.entidades.Filme;
 import com.example.learning.junit.entidades.Locacao;
 import com.example.learning.junit.entidades.Usuario;
@@ -15,6 +16,10 @@ import static com.example.learning.junit.utils.DataUtils.adicionarDias;
 
 public class LocacaoService {
 
+    private LocacaoDAO locacaoDAO;
+
+    private SPCService spcService;
+
     public Locacao alugarFilme(Usuario usuario, List<Filme> filmes) throws FilmeSemEstoqueException, LocadoraException {
         checkEmptyInformations(usuario, filmes);
 
@@ -28,7 +33,7 @@ public class LocacaoService {
         checkDataDeEntrega(locacao);
 
         //Salvando a locacao...
-        //TODO adicionar método para salvar
+        locacaoDAO.salvar(locacao);
         return locacao;
 
     }
@@ -57,6 +62,9 @@ public class LocacaoService {
                 throw new FilmeSemEstoqueException();
             }
         }
+        if (spcService.possuiNegativacao(usuario)) {
+            throw new LocadoraException("Usuário negativado");
+        }
     }
 
     private void getValorLocacao(List<Filme> filmes, Locacao locacao) {
@@ -83,5 +91,13 @@ public class LocacaoService {
             valorLocacao += valorDoFilme;
         }
         locacao.setValor(valorLocacao);
+    }
+
+    public void setLocacaoDAO(LocacaoDAO locacaoDAO) {
+        this.locacaoDAO = locacaoDAO;
+    }
+
+    public void setSPCService(SPCService spc) {
+        spcService = spc;
     }
 }
