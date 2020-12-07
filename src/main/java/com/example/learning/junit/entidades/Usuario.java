@@ -1,5 +1,8 @@
 package com.example.learning.junit.entidades;
 
+import lombok.Data;
+
+@Data
 public class Usuario {
 
     private String nome;

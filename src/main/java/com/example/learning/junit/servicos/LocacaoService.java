@@ -17,14 +17,14 @@ import static com.example.learning.junit.utils.DataUtils.adicionarDias;
 public class LocacaoService {
 
     private LocacaoDAO locacaoDAO;
-
     private SPCService spcService;
+    private EmailService emailService;
 
     public Locacao alugarFilme(Usuario usuario, List<Filme> filmes) throws FilmeSemEstoqueException, LocadoraException {
         checkEmptyInformations(usuario, filmes);
 
         Locacao locacao = new Locacao();
-        locacao.setFilme(filmes);
+        locacao.setFilmes(filmes);
         locacao.setUsuario(usuario);
         locacao.setDataLocacao(new Date());
         getValorLocacao(filmes, locacao);
@@ -36,6 +36,14 @@ public class LocacaoService {
         locacaoDAO.salvar(locacao);
         return locacao;
 
+    }
+
+    public void notificarAtrados() {
+        List<Locacao> locacaoList = locacaoDAO.obterLocacoesPendentes();
+        locacaoList.forEach(locacao -> {
+            if(locacao.getDataRetorno().before(new Date()))
+                emailService.notificarAtraso(locacao.getUsuario());
+        });
     }
 
     private void checkDataDeEntrega(Locacao locacao) {
@@ -99,5 +107,9 @@ public class LocacaoService {
 
     public void setSPCService(SPCService spc) {
         spcService = spc;
+    }
+
+    public void setEmailService(EmailService email) {
+        emailService = email;
     }
 }
